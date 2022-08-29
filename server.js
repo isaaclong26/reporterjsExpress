@@ -114,7 +114,7 @@ app.get("/", async (req, res) =>{
       
           const scoreCheck2 = (data)=>{
             try{
-            console.log("line 114 " + data)
+            // console.log("line 114 " + data)
             if(data.length > 1){
               data = data.substring(0,2)
               
@@ -144,7 +144,7 @@ app.get("/", async (req, res) =>{
 
 
           const scoreCheck = (data)=>{
-            console.log(data)
+            // console.log(data)
             try{
             if(data.length > 1){
               data = data.substring(0,2)
@@ -218,7 +218,7 @@ app.get("/", async (req, res) =>{
          
          
      
-        console.log(projects)
+        // console.log(projects)
     res.send(projects)
 })
 
