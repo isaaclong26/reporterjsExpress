@@ -46,7 +46,7 @@ const lables = [
 "Are there any specific Solar team members you would like to recognize for exceptional service during your project?" ,
 "You're not a robot, are you?" ,
 ]
-
+var urlencode = require('urlencode');
 
 
 
@@ -58,15 +58,7 @@ const lables = [
 let login = "ck_e86cfb8fed55e87904e573fb3eb77cf1f6aa0a76";
           let password = "cs_573c74a16e5e00390d669f3f4e7973ad67a41583";
 var base64 = require('base-64');
-const fetchOptions = {
-          method: "GET",
-          headers:{
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-           "Access-Control-Allow-Origin": "*",
-           "Authorization": `Basic ${base64.encode(`${login}:${password}`)}`
-          },
-         }
+
 const express = require("express");
 const sha256 = require('crypto-js/sha256');
 const Base64 = require('crypto-js/enc-base64');
@@ -77,6 +69,7 @@ const fetch = require('node-fetch');
 const PORT = process.env.PORT || 3001;
 const path = require("path")
 const cors = require('cors');
+const { fstat } = require('fs');
 const app = express();
 app.use(express.urlencoded({
     extended: true
@@ -96,20 +89,29 @@ app.get("/", async (req, res) =>{
 
           let backdate = new Date(today.setDate(today.getDate() - 29))
           backdate = `${backdate.getFullYear()}/${backdate.getMonth()+1}/${backdate.getDate()}`
-          console.log("line 99"+ backdate)
          let entries
           let projects = []
          
-
-       
-           let fetchUrl =`https://solarinnovations.com/wp-json/gf/v2/entries?form_ids[0]=96&search={"start_date": "${backdate}", "end_date": "${Today}"]}&paging[page_size]=20`  
-            await fetch(fetchUrl, fetchOptions)
+          const options = {
+            method: 'GET',
+            headers: {
+              Cookie: 'identity-state=BAhbAA%3D%3D--db43e3715865ca03e3123219ec91e34189be9380; _ab=1; storefront_digest=cc0575cb8b30a9361e8a361bb5fb507d3e28a4fab6460445408eacbd744c4121; __ssid=0a710892-a739-454c-afc9-93cbd81a2855; secure_customer_sig=; localization=US; cart_currency=USD; _orig_referrer=; _landing_page=%2Fpages%2Fparamount-decking-faq; _y=263b52de-ebf1-40bb-af9d-1467cbba4d13; _shopify_y=263b52de-ebf1-40bb-af9d-1467cbba4d13; _tracking_consent=%7B%22lim%22%3A%5B%22GDPR%22%5D%2C%22con%22%3A%7B%22GDPR%22%3A%22%22%7D%2C%22v%22%3A%222.0%22%2C%22reg%22%3A%22%22%7D; _shopify_tw=; _shopify_m=persistent; _ga=GA1.3.784857764.1660568185; _gid=GA1.3.2062294796.1660568185; _fbp=fb.2.1660568185758.2001111498; shopify_pay_redirect=pending; _pin_unauth=dWlkPVlUa3lNelV3TlRndE1UY3dZUzAwWmpNNUxUazNPRE10TmpRelpHWTRNMll5WWpWbQ; _gcl_au=1.1.704464000.1660568186; __hstc=135743086.12a810375472737bd4be8b8634f7349b.1660568187045.1660568187045.1660568187045.1; hubspotutk=12a810375472737bd4be8b8634f7349b; __hssrc=1; locale_bar_accepted=1; _s=355ebd3f-e637-4613-a652-9864f652cb96; _shopify_s=355ebd3f-e637-4613-a652-9864f652cb96; _shopify_tm=; _dd_s=',
+              Authorization: 'Basic Y2tfMDQ4MDljYzRmYjE3NDczMDlhZDY3ODhkZGUwYmQyYmNkZGNlZWZjYzpjc18zNTU0ZWZlZTgxYTI1ZTFjMGRhMmMzMTIyYzVjNjUzYmUzZWNkOTZm'
+            }
+                  }
+                  let url = 'https://solarinnovations.com/wp-json/gf/v2/entries?form_ids%5B0%5D=96&search=%7B%22start_date%22%3A%20%222022%2F7%2F31%22%2C%20%22end_date%22%3A%20%222022%2F8%2F29%22%5D%7D&paging%5Bpage_size%5D=20';
+                  let baseURL = `https://solarinnovations.com/wp-json/gf/v2/entries?`
+                  let url2 =      urlencode( `form_ids[0]=96&search={"start_date": "${backdate}", "end_date": "${Today}"]}&paging[page_size]=20` )
+          
+                  let goodURl = baseURL + url2
+          await  fetch(goodURl, options)
            .then(response =>response.json())
            .then((data)=>{
-             entries = data.entries
+          
+             entries = data.entries  
           })
-
-
+                  
+      
           const scoreCheck2 = (data)=>{
             console.log("line 114 " + data)
             if(data.length > 1){
@@ -137,10 +139,15 @@ app.get("/", async (req, res) =>{
 
 
           const scoreCheck = (data)=>{
+            console.log(data)
+            try{
             if(data.length > 1){
               data = data.substring(0,2)
               
             }
+          }
+          catch(e){
+          }
 
             var result;
               result = parseInt(data)
@@ -206,19 +213,27 @@ app.get("/", async (req, res) =>{
          
          
      
-        
+        console.log(projects)
     res.send(projects)
 })
 
 app.get("/form", async(req, res) =>{
+
+  const options = {
+    method: 'GET',
+    headers: {
+      Cookie: 'identity-state=BAhbAA%3D%3D--db43e3715865ca03e3123219ec91e34189be9380; _ab=1; storefront_digest=cc0575cb8b30a9361e8a361bb5fb507d3e28a4fab6460445408eacbd744c4121; __ssid=0a710892-a739-454c-afc9-93cbd81a2855; secure_customer_sig=; localization=US; cart_currency=USD; _orig_referrer=; _landing_page=%2Fpages%2Fparamount-decking-faq; _y=263b52de-ebf1-40bb-af9d-1467cbba4d13; _shopify_y=263b52de-ebf1-40bb-af9d-1467cbba4d13; _tracking_consent=%7B%22lim%22%3A%5B%22GDPR%22%5D%2C%22con%22%3A%7B%22GDPR%22%3A%22%22%7D%2C%22v%22%3A%222.0%22%2C%22reg%22%3A%22%22%7D; _shopify_tw=; _shopify_m=persistent; _ga=GA1.3.784857764.1660568185; _gid=GA1.3.2062294796.1660568185; _fbp=fb.2.1660568185758.2001111498; shopify_pay_redirect=pending; _pin_unauth=dWlkPVlUa3lNelV3TlRndE1UY3dZUzAwWmpNNUxUazNPRE10TmpRelpHWTRNMll5WWpWbQ; _gcl_au=1.1.704464000.1660568186; __hstc=135743086.12a810375472737bd4be8b8634f7349b.1660568187045.1660568187045.1660568187045.1; hubspotutk=12a810375472737bd4be8b8634f7349b; __hssrc=1; locale_bar_accepted=1; _s=355ebd3f-e637-4613-a652-9864f652cb96; _shopify_s=355ebd3f-e637-4613-a652-9864f652cb96; _shopify_tm=; _dd_s=',
+      Authorization: 'Basic Y2tfMDQ4MDljYzRmYjE3NDczMDlhZDY3ODhkZGUwYmQyYmNkZGNlZWZjYzpjc18zNTU0ZWZlZTgxYTI1ZTFjMGRhMmMzMTIyYzVjNjUzYmUzZWNkOTZm'
+    }
+  }
   let fields
-  let fetchUrl = "https://solarinnovations.com/wp-json/gf/v2/forms?include[0]=96"
-  await fetch(fetchUrl, fetchOptions)
+  let fetchUrl = 'https://solarinnovations.com/wp-json/gf/v2/forms?include%5B0%5D=96';
+  await fetch(fetchUrl, options)
   .then(response =>response.json())
   .then((data)=>{
     fields = data["96"].fields
  })
-
-
+const fs = require("fs")
+fs.writeFileSync("./test.json", JSON.stringify(fields))
 res.send(fields)
 })
