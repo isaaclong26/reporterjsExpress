@@ -113,10 +113,15 @@ app.get("/", async (req, res) =>{
                   
       
           const scoreCheck2 = (data)=>{
+            try{
             console.log("line 114 " + data)
             if(data.length > 1){
               data = data.substring(0,2)
               
+            }
+          }
+            catch(e){
+              data = ""
             }
 
             var result;
