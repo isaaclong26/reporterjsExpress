@@ -100,11 +100,10 @@ app.get("/", async (req, res) =>{
             }
                   }
                   let url = 'https://solarinnovations.com/wp-json/gf/v2/entries?form_ids%5B0%5D=96&search=%7B%22start_date%22%3A%20%222022%2F7%2F31%22%2C%20%22end_date%22%3A%20%222022%2F8%2F29%22%5D%7D&paging%5Bpage_size%5D=20';
-                  let baseURL = `https://solarinnovations.com/wp-json/gf/v2/entries?`
-                  let url2 =      urlencode( `form_ids[0]=96&search={"start_date": "${backdate}", "end_date": "${Today}"]}&paging[page_size]=20` )
-          
-                  let goodURl = baseURL + url2
-          await  fetch(goodURl, options)
+                  let baseURL = `https://solarinnovations.com/wp-json/gf/v2/forms/96/entries`
+              
+
+          await  fetch(baseURL, options)
            .then(response =>response.json())
            .then((data)=>{
           
