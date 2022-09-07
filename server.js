@@ -207,6 +207,7 @@ app.get("/", async (req, res) =>{
             project["Yorn2"] = entries[x]['154'];
             project["Yorn3"] = entries[x]['155'];
             project["date"]  = entries[x].date_created;
+            project["shoutOut"] = entries[x]["123"]
             project["averageScore"] = averageScore(project)
 
 
