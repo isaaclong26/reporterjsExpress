@@ -164,7 +164,7 @@ app.get("/", async (req, res) =>{
                 else{
                 }
 
-                return "hey"
+                return "N/A"
               }
             else{
               return result
