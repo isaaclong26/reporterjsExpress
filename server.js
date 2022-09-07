@@ -84,6 +84,7 @@ app.use(express.urlencoded({
   });
 
 app.get("/", async (req, res) =>{
+  console.log("hit")
           let today = new Date();
           let Today = `${today.getFullYear()}/${today.getMonth()+1}/${today.getDate()}`
 
@@ -100,7 +101,7 @@ app.get("/", async (req, res) =>{
             }
                   }
                   let url = 'https://solarinnovations.com/wp-json/gf/v2/entries?form_ids%5B0%5D=96&search=%7B%22start_date%22%3A%20%222022%2F7%2F31%22%2C%20%22end_date%22%3A%20%222022%2F8%2F29%22%5D%7D&paging%5Bpage_size%5D=20';
-                  let baseURL = `https://solarinnovations.com/wp-json/gf/v2/forms/96/entries`
+                  let baseURL = 'https://solarinnovations.com/wp-json/gf/v2/forms/96/entries/?paging%5Bpage_size%5D=100'
               
 
           await  fetch(baseURL, options)
@@ -108,6 +109,7 @@ app.get("/", async (req, res) =>{
            .then((data)=>{
           
              entries = data.entries  
+             console.log(entries.length)
           })
                   
       
